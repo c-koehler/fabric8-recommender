@@ -15,13 +15,11 @@ import { TimerObservable } from 'rxjs/observable/TimerObservable';
 @Component({
     selector: 'pipleine-insights-details',
     providers: [PipelineInsightsService],
-    // encapsulation: ViewEncapsulation.None,
     styleUrls: ['./pipeline-insights.component.less'],
     templateUrl: './pipeline-insights.component.html'
 })
 @Injectable()
 export class PipelineInsightsComponent implements OnInit, OnChanges {
-    // @Input() gatewayConfig: any;
     @Input() stack: string;
     @Input() buildNumber;
     @Input() appName;
@@ -38,12 +36,9 @@ export class PipelineInsightsComponent implements OnInit, OnChanges {
     public flag: boolean = false;
     public flag1: boolean = false;
     public interval: number = 7000;
-    // public alive: boolean = true;
 
     constructor(private pipelineInsightsService: PipelineInsightsService,
         private http: Http) { }
-
-
 
     public geturl(): void {
         let subs = null;
@@ -67,8 +62,6 @@ export class PipelineInsightsComponent implements OnInit, OnChanges {
                         if (data && (!data.hasOwnProperty('error') && Object.keys(data).length !== 0) && (data.statusCode === 200 || data.statusCode === 202)) {
                             alive = false;
                             subs.unsubscribe();
-                            console.log(data);
-                            console.log("Status  :" + typeof data.statusCode);
                             let response: Array<ResultInformationModel> = data.result;
                             if (response.length > 0) {
                                 for (let i = 0; i < data.result.length; ++i) {
@@ -84,14 +77,12 @@ export class PipelineInsightsComponent implements OnInit, OnChanges {
                                             }
                                         }
                                     }
-
                                 }
                                 for (let i = 0; i < data.result.length; ++i) {
                                     let c = data.result[i];
                                     if (c.user_stack_info) {
                                         if (c.user_stack_info.license_analysis) {
                                             let d = c.user_stack_info.license_analysis.status;
-                                            console.log("d value" + d);
                                             if (d == "ComponentConflict") {
                                                 this.flag1 = true;
                                                 break;
@@ -102,7 +93,6 @@ export class PipelineInsightsComponent implements OnInit, OnChanges {
                                             }
                                         }
                                     }
-
                                 }
                             }
                         }
@@ -110,7 +100,6 @@ export class PipelineInsightsComponent implements OnInit, OnChanges {
                             alive = false;
                             subs.unsubscribe();
                             this.onStackResponse.emit(data);
-                            console.log("Status  :" + data.statusCode);
                         }
                     }, error => {
                         alive = false;
@@ -118,14 +107,9 @@ export class PipelineInsightsComponent implements OnInit, OnChanges {
                     if (counter++ > 3) {
                         alive = false;
                     }
-                })
+                });
         }
-
-
-
     }
-
-
 
     ngOnInit(): void {
         this.geturl();
@@ -136,6 +120,4 @@ export class PipelineInsightsComponent implements OnInit, OnChanges {
             this.geturl();
         }
     }
-
-
 }
